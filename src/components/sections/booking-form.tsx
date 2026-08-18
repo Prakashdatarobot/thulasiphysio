@@ -79,11 +79,11 @@ export function BookingForm({ sourceSection, className }: Props) {
     // Open the WhatsApp tab synchronously, in the same event-handler tick as
     // the click, so browsers don't treat it as a blocked popup — opening it
     // after an `await` breaks the user-gesture chain and gets silently
-    // blocked in most browsers.
-    const waWindow = window.open("", "_blank", "noopener,noreferrer");
-    if (waWindow) {
-      waWindow.location.href = whatsappLink(message);
-    }
+    // blocked in most browsers. Pass the final URL directly rather than
+    // opening blank and redirecting later: `noopener`/`noreferrer` make
+    // `window.open` return null, so a later `waWindow.location.href =`
+    // assignment would silently no-op and leave the tab stuck on about:blank.
+    window.open(whatsappLink(message), "_blank", "noopener,noreferrer");
 
     let sheetWritten = false;
     try {
